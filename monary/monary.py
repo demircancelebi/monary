@@ -8,6 +8,7 @@ import os
 import platform
 import sys
 
+ENCODING = 'utf-8'
 PY3 = sys.version_info[0] >= 3
 if PY3:
     # Python 3.
@@ -425,16 +426,16 @@ class Monary(object):
             uri = "".join(uri)
 
         if sys.version >= "3":
-            p_file = bytes(p_file, "ascii") if p_file is not None else None
-            pem_pwd = bytes(pem_pwd, "ascii") if pem_pwd is not None else None
-            ca_file = bytes(ca_file, "ascii") if ca_file is not None else None
-            ca_dir = bytes(ca_dir, "ascii") if ca_dir is not None else None
-            c_file = bytes(c_file, "ascii") if c_file is not None else None
+            p_file = bytes(p_file, ENCODING) if p_file is not None else None
+            pem_pwd = bytes(pem_pwd, ENCODING) if pem_pwd is not None else None
+            ca_file = bytes(ca_file, ENCODING) if ca_file is not None else None
+            ca_dir = bytes(ca_dir, ENCODING) if ca_dir is not None else None
+            c_file = bytes(c_file, ENCODING) if c_file is not None else None
 
         # Attempt the connection.
         err = get_empty_bson_error()
         self._connection = cmonary.monary_connect(
-            uri.encode('ascii'),
+            uri.encode(ENCODING),
             ctypes.c_char_p(p_file),
             ctypes.c_char_p(pem_pwd),
             ctypes.c_char_p(ca_file),
@@ -490,7 +491,7 @@ class Monary(object):
             if cmonary.monary_set_column_item(
                     coldata,
                     i,
-                    field.encode('ascii'),
+                    field.encode(ENCODING),
                     c_type,
                     c_type_arg,
                     data_p,
@@ -511,8 +512,8 @@ class Monary(object):
         """
         if self._connection is not None:
             return cmonary.monary_use_collection(self._connection,
-                                                 db.encode('ascii'),
-                                                 collection.encode('ascii'))
+                                                 db.encode(ENCODING),
+                                                 collection.encode(ENCODING))
         else:
             raise MonaryError("Unable to get the collection %s.%s - "
                               "not connected" % (db, collection))
